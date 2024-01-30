@@ -20,7 +20,7 @@ def desenhar_retangulos(window, pergunta_atual):
 
     # Adiciona o texto da pergunta no retângulo
     fonte = pygame.font.Font(None, 36)
-    texto_pergunta = fonte.render(pergunta_atual['pergunta'], True, cor_preta)
+    texto_pergunta = fonte.render(pergunta_atual['enunciado'], True, cor_preta)
     window.blit(texto_pergunta, (pos_x + 10, pos_y + 10))
 
     # Desenha os retângulos das alternativas
