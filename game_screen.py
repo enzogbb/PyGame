@@ -3,6 +3,18 @@ from config import FPS, WIDTH, HEIGHT, BLACK
 from assets import carrega_arquivos
 from perguntas import perguntas
 
+def colisao_ponto_retangulo(x_ponto, y_ponto, x_retangulo, y_retangulo, largura_retangulo, altura_retangulo):
+    
+    # Calcula as coordenadas do canto inferior direito do retângulo
+    x_retangulo_direito = x_retangulo + largura_retangulo
+    y_retangulo_inferior = y_retangulo + altura_retangulo
+    
+    # Verifica se o ponto está dentro do retângulo
+    if x_ponto >= x_retangulo and x_ponto <= x_retangulo_direito and y_ponto >= y_retangulo and y_ponto <= y_retangulo_inferior:
+        return True
+    else:
+        return False
+
 def desenhar_retangulos(window, pergunta_atual):
     cor_branca = (255, 255, 255)
     cor_preta = (0, 0, 0)
@@ -49,8 +61,12 @@ def game_screen(window):
     PLAYING = 1
     state = PLAYING
 
+    pergunta_atual_index = 0
+    pergunta_atual = perguntas[pergunta_atual_index]
+
     # Pergunta atual
-    pergunta_atual = perguntas[0]
+    count = 0
+    pergunta_atual = perguntas[count]
 
     # ===== Loop principal =====
     while state != DONE:
@@ -61,6 +77,29 @@ def game_screen(window):
             # ----- Verifica consequências
             if event.type == pygame.QUIT:
                 state = DONE
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                x_click, y_click = pygame.mouse.get_pos()
+
+                for i, alternativa in enumerate(pergunta_atual['alternativas']):
+                    pos_x = (WIDTH - 500) // 2  # Largura atualizada dos retângulos
+                    pos_y = (HEIGHT - (50 + 20) * (len(pergunta_atual['alternativas']) + 1)) // 2 + (50 + 20) * i
+                    if colisao_ponto_retangulo(x_click, y_click, pos_x, pos_y, 500, 50):
+                        print (i)
+                        # Verifica se a resposta está correta
+                        # if i == pergunta_atual['correta']:
+                        #     # Resposta correta, avança para a próxima pergunta
+                        #     pergunta_atual_index += 1
+                        #     if pergunta_atual_index < len(perguntas):
+                        #         pergunta_atual = perguntas[pergunta_atual_index]
+                            
+                        #     else:
+                        #         # O jogador respondeu todas as perguntas corretamente, encerra o jogo
+                        #         count +=1
+                        #         pergunta_atual = perguntas[count]
+                        
+                        # else:
+                        #     # Resposta incorreta, encerra o jogo
+                        #     state = DONE
 
         # ----- Gera saídas
         window.fill(BLACK)  # Preenche com a cor branca
